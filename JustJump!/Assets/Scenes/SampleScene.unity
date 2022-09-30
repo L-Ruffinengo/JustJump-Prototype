@@ -424,8 +424,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: -0.08718318, y: -0.018830158, z: 0.0016440985, w: -0.9960129}
+  m_LocalPosition: {x: 0.059353888, y: 1.5388231, z: -4.090947}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -491,5 +491,21 @@ PrefabInstance:
       propertyPath: m_Avatar
       value: 
       objectReference: {fileID: 9000000, guid: 82a2914d8f86c62488456950c8330e38, type: 3}
+    - target: {fileID: 4474993352198488103, guid: 6f83a09855fbdf54a8bd67b66f2cf75b, type: 3}
+      propertyPath: maxJumpTime
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 4474993352198488103, guid: 6f83a09855fbdf54a8bd67b66f2cf75b, type: 3}
+      propertyPath: maxJumpHeight
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4474993352198488103, guid: 6f83a09855fbdf54a8bd67b66f2cf75b, type: 3}
+      propertyPath: movementSpeed
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4474993352198488103, guid: 6f83a09855fbdf54a8bd67b66f2cf75b, type: 3}
+      propertyPath: rotationSpeed
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6f83a09855fbdf54a8bd67b66f2cf75b, type: 3}
