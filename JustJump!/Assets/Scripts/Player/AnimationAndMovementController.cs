@@ -22,8 +22,6 @@ public class AnimationAndMovementController : MonoBehaviour
     [SerializeField]
     float movementSpeed = 1.0f;
 
-
-
     //---Variables de SALTO---
     bool isJumpPressed = false;
     float initialJumpVelocity;
@@ -39,6 +37,7 @@ public class AnimationAndMovementController : MonoBehaviour
     float maxJumpTimeModifier2 = 1.25f; //duracion segundo salto
     [SerializeField]
     float maxJumpTimeModifier3 = 1.5f; //duracion tercer salto
+    [SerializeField]
     bool isJumping = false;
     int isJumpingHash;
     int jumpCountHash;
@@ -47,6 +46,14 @@ public class AnimationAndMovementController : MonoBehaviour
     Dictionary<int, float> initialJumpVelocities = new Dictionary<int, float>();
     Dictionary<int, float> jumpGravities = new Dictionary<int, float>();
     Coroutine currentJumpResetRoutine = null;
+
+    //---Variables de DASH---
+    bool isDashPressed = false;
+    bool isDashing = false;
+    [SerializeField]
+    float dashTime = 2.0f;
+    [SerializeField]
+    float dashSpeed = 2.0f;
 
     //---Variables CONSTANTES---
     float gravity = -9.8f;
@@ -61,14 +68,18 @@ public class AnimationAndMovementController : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
 
+        //---HASH
         isJumpingHash = Animator.StringToHash("isJumping");
         jumpCountHash = Animator.StringToHash("jumpCount");
 
+        //---SUSCRIPCIONES DE INPUT SYSTEM
         playerInput.CharacterControls.Move.started += OnMovementInput; //cuando se comience a apretar los botones se llama al método
         playerInput.CharacterControls.Move.performed += OnMovementInput; //cuando se mantengan apretados los botones se llama al metodo
         playerInput.CharacterControls.Move.canceled += OnMovementInput; //cuando se dejen de apretar los botones se llama al metodo
         playerInput.CharacterControls.Jump.started += OnJump;
         playerInput.CharacterControls.Jump.canceled += OnJump;
+        playerInput.CharacterControls.Dash.started += onDash;
+        playerInput.CharacterControls.Dash.canceled += onDash;
 
         ControlJumpVariables();
 
@@ -82,6 +93,8 @@ public class AnimationAndMovementController : MonoBehaviour
 
         ControlGravity();
         Jump();
+        Dash();
+
     }
 
     //---METODOS DE CONTROL-----------------------------------------------
@@ -94,7 +107,7 @@ public class AnimationAndMovementController : MonoBehaviour
         {
             animator.SetBool("isRunning", true);
         }
-        else if (!isMovementPressed && isRunning)
+        else if ((!isMovementPressed && isRunning))
         {
             animator.SetBool("isRunning", false);
         }
@@ -111,7 +124,8 @@ public class AnimationAndMovementController : MonoBehaviour
                 animator.SetBool(isJumpingHash, false);
                 isJumpAnimating = false;
                 currentJumpResetRoutine = StartCoroutine(JumpResetRoutine());
-                if (jumpCount == 3){
+                if (jumpCount == 3)
+                {
                     jumpCount = 0;
                     animator.SetInteger(jumpCountHash, jumpCount);
                 }
@@ -198,6 +212,35 @@ public class AnimationAndMovementController : MonoBehaviour
         yield return new WaitForSeconds(0.5f); //cuando se llame a la corutin, la función se frena por 0.5 segundos
         jumpCount = 0; //cuando se espera ese tiempo, reseteamos el contado de saltos
     }
+
+    //---Metodos de DASH----
+    void Dash()
+    {
+        if (!isDashing && isDashPressed)
+        {
+            
+            isDashing = true;
+            StartCoroutine(DashRoutine());
+            Debug.Log("IS DASHING");
+        }
+        else if (isDashing && !isDashPressed)
+        {
+            isDashing = false;
+
+        }
+    }
+
+    IEnumerator DashRoutine()
+    {
+        float startTime = Time.time;
+        while (Time.time < startTime + dashTime)
+        {
+            characterController.Move(transform.forward * dashSpeed * Time.deltaTime);
+            yield return null;
+        }
+    }
+
+    //---Metodos de InputSystem--------------------------------------------------------------------------------------------------------------------
     void OnMovementInput(InputAction.CallbackContext context)
     {
         actualMovementInput = context.ReadValue<Vector2>();
@@ -211,6 +254,11 @@ public class AnimationAndMovementController : MonoBehaviour
     void OnJump(InputAction.CallbackContext context)
     {
         isJumpPressed = context.ReadValueAsButton();
+    }
+
+    void onDash(InputAction.CallbackContext context)
+    {
+        isDashPressed = context.ReadValueAsButton();
     }
     //--------------------------------------------------------------------------------------------------
     private void OnEnable()

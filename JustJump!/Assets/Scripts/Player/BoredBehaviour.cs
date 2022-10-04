@@ -46,7 +46,7 @@ public class BoredBehaviour : StateMachineBehaviour
 
         if (isBored)
         {
-            boredAnimation--;
+            boredAnimation--; //si esta aburrido volvemos a la animacion idle
         }
         //reseteamos variabels
         isBored = false;
